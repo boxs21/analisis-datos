@@ -41,6 +41,11 @@
 /* ── SLIDE NUMBER ── */
 .reveal .slide-number { background:transparent; color:var(--mute); font-size:.6em; font-family:'Rajdhani',sans-serif; }
 
+/* ── CONTROLS (flechas navegación) ── */
+.reveal .controls { color: rgba(255,255,255,0.55); }
+.reveal .controls button.enabled { color: rgba(255,255,255,0.7); }
+.reveal .controls button.enabled:hover { color: #fff; }
+
 /* ── STRIPE DECORATION ── */
 .stripe { width:60px; height:5px; background:var(--red); margin-bottom:20px; }
 .stripe-wide { width:100%; height:3px; background:linear-gradient(90deg,var(--red),transparent); margin-bottom:24px; }
@@ -176,7 +181,7 @@
 .conclusion-text p { color:#aaa; font-size:.78em; margin:2px 0 0; }
 
 /* ── FRAGMENTS ── */
-.reveal .fragment { opacity:0; transition: opacity .5s ease, transform .4s ease; transform:translateY(10px); }
+.reveal .fragment { opacity:0; transition: opacity .18s ease, transform .14s ease; transform:translateY(5px); }
 .reveal .fragment.visible { opacity:1; transform:translateY(0); }
 
 /* ── LIMIT BADGE ── */
@@ -311,12 +316,12 @@
       <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">DISTRIBUCIÓN DE PILOTOS (post-limpieza)</div>
       <div class="compare-box compare-top fragment" style="margin-bottom:12px">
         <span class="tag">★ EQUIPOS TOP</span>
-        <div class="big-stat"><div class="num red">~60</div><div class="label">pilotos analizados</div></div>
+        <div class="big-stat"><div class="num red">123</div><div class="label">pilotos analizados</div></div>
         <p style="font-size:.7em;margin-top:8px">Ferrari · McLaren · Mercedes · Red Bull · Williams · Lotus · Renault · Benetton · Brawn</p>
       </div>
       <div class="compare-box compare-chico fragment">
         <span class="tag">◆ EQUIPOS CHICO</span>
-        <div class="big-stat"><div class="num blue">~140</div><div class="label">pilotos analizados</div></div>
+        <div class="big-stat"><div class="num blue">254</div><div class="label">pilotos analizados</div></div>
         <p style="font-size:.7em;margin-top:8px">Todos los constructores sin ningún WCC</p>
       </div>
     </div>
@@ -502,7 +507,7 @@
         <li class="fragment">Variable dependiente continua (PPC)</li>
         <li class="fragment">Dos grupos independientes</li>
         <li class="fragment">Varianzas desiguales (~1.50 vs ~0.85)</li>
-        <li class="fragment">TCL garantiza normalidad con n~60/140</li>
+        <li class="fragment">TCL garantiza normalidad con n~123/254</li>
       </ul>
     </div>
     <div>
@@ -512,7 +517,7 @@
         <div class="label">α = 0.05</div>
       </div>
       <div class="big-stat fragment" style="margin-bottom:14px">
-        <div class="num red">T &gt; 5.0</div>
+        <div class="num red">T = 4.61</div>
         <div class="label">estadístico (positivo, alto)</div>
       </div>
       <div class="fragment" style="text-align:center;margin-top:20px">
@@ -542,16 +547,16 @@
       <table class="slide-table">
         <thead><tr><th>Variable</th><th>Coef.</th><th>p-valor</th><th></th></tr></thead>
         <tbody>
-          <tr><td>Constante (β₀)</td><td>~0.15</td><td>~0.14</td><td><span class="badge badge-blue">n.s.</span></td></tr>
-          <tr><td><strong>es_top (β₁)</strong></td><td><strong>~1.00</strong></td><td><strong>&lt;0.001</strong></td><td><span class="badge badge-green">✓</span></td></tr>
-          <tr><td>n_carreras (β₂)</td><td>~0.005</td><td>&lt;0.001</td><td><span class="badge badge-green">✓</span></td></tr>
+          <tr><td>Constante (β₀)</td><td>-0.21</td><td>~0.04</td><td><span class="badge badge-green">✓</span></td></tr>
+          <tr><td><strong>es_top (β₁)</strong></td><td><strong>~0.52</strong></td><td><strong>&lt;0.001</strong></td><td><span class="badge badge-green">✓</span></td></tr>
+          <tr><td>n_carreras (β₂)</td><td>~0.015</td><td>&lt;0.001</td><td><span class="badge badge-green">✓</span></td></tr>
         </tbody>
       </table>
       <div style="margin-top:12px;font-size:.72em;color:var(--mute)">Estimado por Mínimos Cuadrados Ordinarios · statsmodels Python</div>
     </div>
     <div>
       <div class="big-stat fragment" style="margin-bottom:16px">
-        <div class="num red">21.7%</div>
+        <div class="num red">41.6%</div>
         <div class="label">R² — varianza explicada</div>
       </div>
       <div class="card fragment">
@@ -564,7 +569,7 @@
       </div>
     </div>
   </div>
-  <aside class="notes">Para profundizar en la relación construimos un modelo OLS con dos variables. La variable es_top y el control n_carreras. El modelo tiene R² de 21.7% y ambos coeficientes son significativos.</aside>
+  <aside class="notes">Para profundizar en la relación construimos un modelo OLS con dos variables. La variable es_top y el control n_carreras. El modelo tiene R² de 41.6% y ambos coeficientes son significativos.</aside>
 </section>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -579,8 +584,8 @@
       <div style="display:flex;align-items:flex-start;gap:16px">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:var(--mute);line-height:1">β₀</div>
         <div>
-          <strong>Constante ≈ 0.15</strong>
-          <p>PPC base de referencia teórico. Es el PPC esperado para un piloto de equipo Chico con cero carreras. No tiene interpretación práctica directa, pero ancla correctamente el modelo.</p>
+          <strong>Constante ≈ -0.21</strong>
+          <p>Intercepto del modelo (p ≈ 0.04). Teóricamente es el PPC esperado con cero carreras y debut en Chico, pero al ser negativo y extrapolado fuera del rango de datos, no tiene interpretación práctica directa. Ancla correctamente el modelo.</p>
         </div>
       </div>
     </div>
@@ -588,8 +593,8 @@
       <div style="display:flex;align-items:flex-start;gap:16px">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:var(--red);line-height:1">β₁</div>
         <div>
-          <strong>es_top ≈ +1.00 ⭐ Coeficiente clave</strong>
-          <p>Manteniendo constante la experiencia, debutar en un equipo Top agrega <strong style="color:var(--red)">~1 punto adicional al PPC</strong>. Si dos pilotos tienen exactamente las mismas carreras disputadas pero uno debutó en Top, esperamos que promedíe 1 pto/carrera más. Estadísticamente significativo (p &lt; 0.001).</p>
+          <strong>es_top ≈ +0.52 ⭐ Coeficiente clave</strong>
+          <p>Manteniendo constante la experiencia, debutar en un equipo Top agrega <strong style="color:var(--red)">~0.52 puntos adicionales al PPC</strong>. Si dos pilotos tienen exactamente las mismas carreras disputadas pero uno debutó en Top, esperamos que promedíe 0.52 pts/carrera más. Estadísticamente significativo (p &lt; 0.001).</p>
         </div>
       </div>
     </div>
@@ -597,13 +602,13 @@
       <div style="display:flex;align-items:flex-start;gap:16px">
         <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:var(--blue);line-height:1">β₂</div>
         <div>
-          <strong>n_carreras ≈ +0.005</strong>
-          <p>Cada carrera adicional suma ~0.005 pts al PPC. Pequeño por carrera, acumulado: 200 carreras = ~1 pto extra. Los pilotos longevos tienden a ser más consistentes o a estar en mejores equipos.</p>
+          <strong>n_carreras ≈ +0.015</strong>
+          <p>Cada carrera adicional suma ~0.015 pts al PPC. Pequeño por carrera, acumulado: 200 carreras = ~3 pts extra. Los pilotos longevos tienden a ser más consistentes o a estar en mejores equipos.</p>
         </div>
       </div>
     </div>
   </div>
-  <aside class="notes">Interpretemos uno por uno. El coeficiente más importante es es_top: controlando por experiencia, debutar en Top agrega 1 punto por carrera. Es el resultado central.</aside>
+  <aside class="notes">Interpretemos uno por uno. El coeficiente más importante es es_top: controlando por experiencia, debutar en Top agrega 0.52 puntos por carrera. Es el resultado central.</aside>
 </section>
 
 <!-- ═══════════════════════════════════════════════ -->
@@ -621,8 +626,8 @@
         <p>T-test y regresión apuntan en la misma dirección. La diferencia de ~1 pto/carrera es robusta y persiste al controlar por experiencia.</p>
       </div>
       <div class="card fragment" style="margin-bottom:10px">
-        <strong>R² = 21.7% no es "bajo"</strong>
-        <p>En análisis deportivos con solo 2 variables, explicar el 21.7% de la varianza del rendimiento humano es informativo. El fenómeno es complejo por naturaleza.</p>
+        <strong>R² = 41.6% es informativo</strong>
+        <p>En análisis deportivos con solo 2 variables, explicar el 41.6% de la varianza del rendimiento humano es un resultado sólido. El fenómeno es complejo por naturaleza.</p>
       </div>
       <div class="card fragment" style="border-left-color:#F39C12">
         <strong>Correlación ≠ Causalidad</strong>
@@ -694,14 +699,14 @@
       <div class="conclusion-num">2</div>
       <div class="conclusion-text">
         <strong>El efecto persiste al controlar por experiencia</strong>
-        <p>La regresión OLS confirma que, con igual número de carreras, debutar en Top agrega ~1 pto/carrera al PPC (p &lt; 0.001).</p>
+        <p>La regresión OLS confirma que, con igual número de carreras, debutar en Top agrega ~0.52 pts/carrera al PPC (p &lt; 0.001).</p>
       </div>
     </div>
     <div class="conclusion-item fragment">
       <div class="conclusion-num">3</div>
       <div class="conclusion-text">
         <strong>Correlación estructural, no prueba de causalidad</strong>
-        <p>El análisis describe y cuantifica la diferencia con rigor estadístico. El R² = 21.7% muestra que el fenómeno es complejo y multifactorial.</p>
+        <p>El análisis describe y cuantifica la diferencia con rigor estadístico. El R² = 41.6% muestra que el modelo captura bien la varianza, aunque el fenómeno es complejo y multifactorial.</p>
       </div>
     </div>
   </div>
