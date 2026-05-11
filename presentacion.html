@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis F1 — Equipo de Debut y PPC</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.0/reset.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.0/reveal.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:  #E10600;
+  --dark: #0d0d0d;
+  --card: #1c1c1c;
+  --dim:  #2a2a2a;
+  --text: #f0f0f0;
+  --mute: #888;
+  --blue: #3A86FF;
+  --green:#2ECC71;
+}
+
+/* ── BASE ── */
+.reveal { font-family:'Inter',sans-serif; background:var(--dark); color:var(--text); }
+.reveal .slides { text-align:left; }
+.reveal section { padding:0 60px; box-sizing:border-box; }
+.reveal h1,.reveal h2,.reveal h3 {
+  font-family:'Bebas Neue',sans-serif;
+  letter-spacing:2px; text-transform:uppercase; margin:0 0 .4em;
+}
+.reveal h1 { font-size:2.8em; line-height:1.05; }
+.reveal h2 { font-size:1.8em; color:var(--red); }
+.reveal h3 { font-size:1.2em; color:var(--mute); font-family:'Rajdhani',sans-serif; font-weight:600; letter-spacing:3px; }
+.reveal p,.reveal li { font-size:.88em; line-height:1.7; color:#ccc; }
+.reveal ul { list-style:none; padding:0; margin:0; }
+.reveal ul li::before { content:"▸ "; color:var(--red); }
+
+/* ── PROGRESS ── */
+.reveal .progress { background:transparent; height:4px; }
+.reveal .progress span { background:var(--red); transition:width 0.4s ease; }
+
+/* ── SLIDE NUMBER ── */
+.reveal .slide-number { background:transparent; color:var(--mute); font-size:.6em; font-family:'Rajdhani',sans-serif; }
+
+/* ── STRIPE DECORATION ── */
+.stripe { width:60px; height:5px; background:var(--red); margin-bottom:20px; }
+.stripe-wide { width:100%; height:3px; background:linear-gradient(90deg,var(--red),transparent); margin-bottom:24px; }
+
+/* ── CARDS ── */
+.card {
+  background:var(--card); border-left:3px solid var(--red);
+  padding:16px 20px; border-radius:4px; margin-bottom:12px;
+}
+.card-blue { border-left-color:var(--blue); }
+.card-green { border-left-color:var(--green); }
+.card strong { color:#fff; font-size:.95em; }
+.card p { margin:4px 0 0; font-size:.8em; color:#aaa; }
+
+/* ── GRID ── */
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.grid-4 { display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:14px; }
+
+/* ── BIG STAT ── */
+.big-stat { text-align:center; }
+.big-stat .num { font-family:'Bebas Neue',sans-serif; font-size:4.5em; line-height:1; }
+.big-stat .num.red   { color:var(--red); }
+.big-stat .num.blue  { color:var(--blue); }
+.big-stat .num.green { color:var(--green); }
+.big-stat .label { font-size:.75em; color:var(--mute); margin-top:4px; }
+
+/* ── HIGHLIGHT BOX ── */
+.box-highlight {
+  background:rgba(225,6,0,.12); border:1px solid var(--red);
+  padding:20px 24px; border-radius:6px; margin:16px 0;
+}
+.box-highlight p { color:#fff; font-size:.9em; font-style:italic; margin:0; }
+
+.box-formula {
+  background:#111; border:1px solid #333;
+  padding:14px 20px; border-radius:4px; font-family:monospace;
+  color:#7FDBFF; font-size:.85em; margin:12px 0;
+}
+
+/* ── TABLE ── */
+.slide-table { width:100%; border-collapse:collapse; font-size:.78em; }
+.slide-table thead tr { background:var(--red); }
+.slide-table thead th { padding:10px 14px; color:#fff; text-align:left; font-weight:600; }
+.slide-table tbody tr:nth-child(odd)  { background:rgba(255,255,255,.04); }
+.slide-table tbody tr:nth-child(even) { background:rgba(255,255,255,.02); }
+.slide-table tbody td { padding:9px 14px; color:#ccc; }
+.slide-table tbody td strong { color:#fff; }
+
+/* ── BADGE ── */
+.badge {
+  display:inline-block; padding:5px 14px; border-radius:20px;
+  font-size:.75em; font-weight:700; letter-spacing:1px;
+}
+.badge-red   { background:rgba(225,6,0,.2); color:var(--red); border:1px solid var(--red); }
+.badge-blue  { background:rgba(58,134,255,.2); color:var(--blue); border:1px solid var(--blue); }
+.badge-green { background:rgba(46,204,113,.2); color:var(--green); border:1px solid var(--green); }
+
+/* ── SPEAKER LABEL ── */
+.speaker {
+  font-family:'Rajdhani',sans-serif; font-size:.65em; font-weight:700;
+  letter-spacing:2px; color:var(--mute); margin-bottom:8px; display:block;
+}
+.speaker.javier { color:var(--blue); }
+
+/* ── PORTADA ── */
+.slide-portada {
+  background: linear-gradient(135deg,#0d0d0d 60%,#1a0000 100%) !important;
+}
+.portada-line { width:100%; height:4px; background:var(--red); margin:20px 0; }
+.portada-title { font-family:'Bebas Neue',sans-serif; font-size:2.4em; line-height:1.1; letter-spacing:2px; color:#fff; }
+.portada-sub   { font-family:'Rajdhani',sans-serif; font-size:1em; color:var(--mute); letter-spacing:3px; margin:12px 0 0; }
+.portada-meta  { display:flex; gap:40px; margin-top:30px; }
+.portada-meta div { font-size:.75em; color:#aaa; }
+.portada-meta div strong { color:#fff; display:block; font-size:1.1em; }
+
+/* ── AGENDA ── */
+.agenda-item {
+  background:var(--card); padding:18px 20px; border-radius:6px;
+  display:flex; align-items:center; gap:16px;
+}
+.agenda-num {
+  font-family:'Bebas Neue',sans-serif; font-size:2.2em; color:var(--red);
+  line-height:1; min-width:40px;
+}
+.agenda-text strong { color:#fff; font-size:.9em; display:block; }
+.agenda-text span   { color:var(--mute); font-size:.75em; }
+
+/* ── COMPARISON ── */
+.compare-box {
+  background:var(--card); border-radius:8px; padding:24px 20px;
+  text-align:center; position:relative; overflow:hidden;
+}
+.compare-box::after {
+  content:''; position:absolute; top:0; left:0; right:0; height:3px;
+}
+.compare-top::after  { background:var(--red); }
+.compare-chico::after{ background:var(--blue); }
+.compare-box .tag {
+  font-family:'Rajdhani',sans-serif; font-size:.7em; font-weight:700;
+  letter-spacing:3px; margin-bottom:12px; display:block;
+}
+.compare-top  .tag { color:var(--red); }
+.compare-chico .tag { color:var(--blue); }
+
+/* ── IMG PLACEHOLDER ── */
+.img-placeholder {
+  background:#1a1a1a; border:2px dashed #333; border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:8px; height:260px;
+}
+.img-placeholder span { color:#555; font-size:.8em; font-family:'Rajdhani',sans-serif; letter-spacing:2px; }
+
+/* ── CIERRE ── */
+.slide-cierre { background:linear-gradient(135deg,#0d0d0d 50%,#1a0000) !important; }
+.quote-box {
+  border-left:3px solid var(--red); padding:12px 20px;
+  background:rgba(255,255,255,.04); border-radius:0 6px 6px 0;
+  margin:20px 0;
+}
+.quote-box p { font-style:italic; color:#bbb; margin:0; font-size:.82em; }
+.quote-box cite { color:var(--mute); font-size:.72em; display:block; margin-top:6px; }
+
+/* ── CONCLUSION ITEM ── */
+.conclusion-item {
+  display:flex; align-items:flex-start; gap:16px; margin-bottom:16px;
+}
+.conclusion-num {
+  font-family:'Bebas Neue',sans-serif; font-size:2.4em; color:var(--red);
+  line-height:1; min-width:36px;
+}
+.conclusion-text strong { color:#fff; display:block; font-size:.9em; }
+.conclusion-text p { color:#aaa; font-size:.78em; margin:2px 0 0; }
+
+/* ── FRAGMENTS ── */
+.reveal .fragment { opacity:0; transition: opacity .5s ease, transform .4s ease; transform:translateY(10px); }
+.reveal .fragment.visible { opacity:1; transform:translateY(0); }
+
+/* ── LIMIT BADGE ── */
+.limit-item {
+  display:flex; gap:12px; align-items:flex-start; padding:12px 0;
+  border-bottom:1px solid #222;
+}
+.limit-icon { font-size:1.2em; min-width:28px; }
+.limit-text strong { color:#fff; font-size:.85em; display:block; }
+.limit-text p { color:#888; font-size:.76em; margin:2px 0 0; }
+
+/* ── PROGRESS BAR CHART (CSS) ── */
+.bar-chart { margin:16px 0; }
+.bar-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.bar-label { font-size:.78em; color:#ccc; width:90px; flex-shrink:0; font-family:'Rajdhani',sans-serif; font-weight:600; }
+.bar-track { flex:1; background:#222; border-radius:3px; height:28px; overflow:hidden; }
+.bar-fill   { height:100%; border-radius:3px; display:flex; align-items:center; padding-left:10px; font-size:.8em; font-weight:700; color:#fff; font-family:'Rajdhani',sans-serif; transition:width 1s ease; }
+.bar-fill.red  { background:linear-gradient(90deg,var(--red),#ff4444); }
+.bar-fill.blue { background:linear-gradient(90deg,var(--blue),#66aaff); }
+</style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 1 — PORTADA                              -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="slide-portada">
+  <div style="padding-top:60px">
+    <div class="stripe"></div>
+    <div style="font-family:'Rajdhani',sans-serif;font-size:.72em;color:var(--mute);letter-spacing:4px;margin-bottom:16px">ANÁLISIS DE DATOS E INFERENCIA ESTADÍSTICA</div>
+    <div class="portada-title">¿Debutar en un equipo grande<br>te da más puntos en la F1?</div>
+    <div class="portada-line"></div>
+    <div class="portada-sub">IMPACTO DEL EQUIPO DE DEBUT EN EL PROMEDIO DE PUNTOS POR CARRERA · 1950–2023</div>
+    <div class="portada-meta">
+      <div><strong>Andy Villarroel</strong>Presentador A</div>
+      <div><strong>Javier Alcaino</strong>Presentador B</div>
+      <div><strong>Mayo 2025</strong>Universidad del Desarrollo</div>
+    </div>
+  </div>
+  <aside class="notes">Buenos tardes. Somos Andy Villarroel y Javier Alcaino. En los próximos doce minutos les presentamos nuestro análisis sobre Fórmula 1.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 2 — AGENDA                               -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">ANDY</span>
+  <div class="stripe"></div>
+  <h2>Agenda</h2>
+  <div class="grid-2" style="margin-top:20px">
+    <div class="agenda-item fragment">
+      <div class="agenda-num">01</div>
+      <div class="agenda-text"><strong>Pregunta e Introducción</strong><span>Contexto, definiciones, hipótesis</span></div>
+    </div>
+    <div class="agenda-item fragment">
+      <div class="agenda-num">02</div>
+      <div class="agenda-text"><strong>Dataset y Limpieza</strong><span>Fuentes, decisiones metodológicas</span></div>
+    </div>
+    <div class="agenda-item fragment">
+      <div class="agenda-num">03</div>
+      <div class="agenda-text"><strong>Análisis Exploratorio</strong><span>Estadística descriptiva, visualizaciones</span></div>
+    </div>
+    <div class="agenda-item fragment">
+      <div class="agenda-num">04</div>
+      <div class="agenda-text"><strong>Inferencia y Regresión</strong><span>T-test, OLS, discusión, cierre</span></div>
+    </div>
+  </div>
+  <aside class="notes">La presentación está dividida en cuatro bloques. Primero la pregunta de investigación y el dataset. Luego el EDA. Después Javier presenta las pruebas estadísticas. Y cerramos con discusión y próximos pasos.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 3 — PREGUNTA DE INVESTIGACIÓN            -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">ANDY</span>
+  <div class="stripe"></div>
+  <h2>Pregunta de Investigación</h2>
+  <div class="box-highlight">
+    <p>¿El promedio de puntos por carrera (PPC) de los pilotos que debutaron en equipos <strong style="color:var(--red)">Top</strong> es significativamente mayor que el de aquellos que debutaron en equipos <strong style="color:var(--blue)">Chico</strong>?</p>
+  </div>
+  <div class="grid-2" style="margin-top:16px">
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">DEFINICIONES</div>
+      <div class="card" style="margin-bottom:10px">
+        <strong><span style="color:var(--red)">TOP</span> = Ganadores del WCC</strong>
+        <p>Ferrari · McLaren · Mercedes · Red Bull · Williams · Renault · Lotus · Brabham...</p>
+      </div>
+      <div class="card card-blue">
+        <strong><span style="color:var(--blue)">CHICO</span> = Sin título de constructores</strong>
+        <p>Todo equipo que nunca ganó el Campeonato Mundial de Constructores</p>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">MÉTRICA Y HIPÓTESIS</div>
+      <div class="box-formula">PPC = puntos_totales / n_carreras</div>
+      <div class="card fragment" style="margin-top:10px">
+        <strong>H₀:</strong> <span style="color:#aaa">μ<sub>Top</sub> = μ<sub>Chico</sub></span>
+      </div>
+      <div class="card fragment" style="margin-top:8px">
+        <strong>H₁:</strong> <span style="color:#aaa">μ<sub>Top</sub> &gt; μ<sub>Chico</sub></span> <span class="badge badge-blue" style="margin-left:8px">Unilateral</span>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Todo buen análisis parte de una pregunta concreta. Definimos equipo Top como cualquier equipo que haya ganado al menos un WCC. Y medimos el rendimiento con el PPC — puntos totales dividido por número de carreras.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 4 — DATASET                              -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">ANDY</span>
+  <div class="stripe"></div>
+  <h2>Dataset</h2>
+  <div class="grid-2">
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">FUENTE: ERGAST MOTOR RACING DATABASE</div>
+      <table class="slide-table">
+        <thead><tr><th>Tabla</th><th>Registros</th></tr></thead>
+        <tbody>
+          <tr><td><strong>results.csv</strong></td><td>26,000+</td></tr>
+          <tr><td><strong>races.csv</strong></td><td>1,100+</td></tr>
+          <tr><td><strong>drivers.csv</strong></td><td>~860</td></tr>
+          <tr><td><strong>constructors.csv</strong></td><td>~210</td></tr>
+          <tr><td><strong>constructor_standings.csv</strong></td><td>13,000+</td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:.72em;color:var(--mute)">📅 Cobertura: 1950 – 2023 · +70 temporadas</div>
+    </div>
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">DISTRIBUCIÓN DE PILOTOS (post-limpieza)</div>
+      <div class="compare-box compare-top fragment" style="margin-bottom:12px">
+        <span class="tag">★ EQUIPOS TOP</span>
+        <div class="big-stat"><div class="num red">~60</div><div class="label">pilotos analizados</div></div>
+        <p style="font-size:.7em;margin-top:8px">Ferrari · McLaren · Mercedes · Red Bull · Williams · Lotus · Renault · Benetton · Brawn</p>
+      </div>
+      <div class="compare-box compare-chico fragment">
+        <span class="tag">◆ EQUIPOS CHICO</span>
+        <div class="big-stat"><div class="num blue">~140</div><div class="label">pilotos analizados</div></div>
+        <p style="font-size:.7em;margin-top:8px">Todos los constructores sin ningún WCC</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Usamos el dataset de Ergast Motor Racing, la API de referencia para F1 con más de 70 años de historia. Trabajamos con 5 tablas principales.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 5 — LIMPIEZA DE DATOS                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">ANDY</span>
+  <div class="stripe"></div>
+  <h2>Limpieza de Datos</h2>
+  <p style="margin-bottom:16px">Los datos crudos requirieron varias decisiones metodológicas antes de estar listos para el análisis.</p>
+  <div class="grid-2">
+    <div>
+      <div class="card fragment">
+        <strong>① Filtro ≥ 10 carreras</strong>
+        <p>Pilotos con menos de 10 carreras tienen PPC no representativo. Un podio en 2 carreras daría PPC de 10+ que no refleja rendimiento real.</p>
+      </div>
+      <div class="card fragment" style="margin-top:10px">
+        <strong>② Definición objetiva de Top</strong>
+        <p>Identificado con constructor_standings.csv. Todo equipo que aparezca con posición=1 al cierre de al menos una temporada.</p>
+      </div>
+      <div class="card fragment" style="margin-top:10px">
+        <strong>③ Debut = primera aparición</strong>
+        <p>Se toma el registro con menor raceId para cada piloto. El raceId es incremental y representa orden cronológico.</p>
+      </div>
+    </div>
+    <div>
+      <div class="card card-blue fragment">
+        <strong>④ Valores nulos en puntos</strong>
+        <p>Se imputan como 0 puntos cuando el registro existe pero el valor está ausente (retiro sin puntos, no clasificado).</p>
+      </div>
+      <div class="card card-blue fragment" style="margin-top:10px">
+        <strong>⑤ Sin duplicados detectados</strong>
+        <p>Las tablas results.csv y drivers.csv no presentaron filas duplicadas en las columnas clave del análisis.</p>
+      </div>
+      <div class="card fragment" style="margin-top:10px;border-left-color:#F39C12">
+        <strong>⚠ Limitación principal</strong>
+        <p>El sistema de puntuación cambió históricamente (9 pts en 1950 → 25 pts hoy). Los PPC no son comparables entre eras.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Los datos crudos no llegaron listos para usar. El criterio más importante fue filtrar pilotos con menos de 10 carreras. La razón es estadística pura.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 6 — EDA: ESTADÍSTICA DESCRIPTIVA         -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">ANDY</span>
+  <div class="stripe"></div>
+  <h2>EDA — Estadística Descriptiva</h2>
+  <div class="grid-2" style="align-items:start">
+    <div>
+      <table class="slide-table" style="margin-bottom:16px">
+        <thead><tr><th>Estadístico</th><th style="color:#ffaaaa">Top</th><th style="color:#aac4ff">Chico</th></tr></thead>
+        <tbody>
+          <tr><td>Media PPC</td><td><strong>1.62</strong></td><td><strong>0.63</strong></td></tr>
+          <tr><td>Mediana</td><td>~1.30</td><td>~0.35</td></tr>
+          <tr><td>Desv. estándar</td><td>~1.50</td><td>~0.85</td></tr>
+          <tr><td>Mínimo</td><td>~0.00</td><td>~0.00</td></tr>
+          <tr><td>Máximo</td><td>~6.50</td><td>~5.20</td></tr>
+        </tbody>
+      </table>
+      <div class="bar-chart fragment">
+        <div class="bar-row">
+          <div class="bar-label">Top</div>
+          <div class="bar-track"><div class="bar-fill red" style="width:80%">1.62 pts</div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-label">Chico</div>
+          <div class="bar-track"><div class="bar-fill blue" style="width:31%">0.63 pts</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="big-stat fragment" style="margin-bottom:16px">
+        <div class="num red">+0.99</div>
+        <div class="label">puntos/carrera de ventaja promedio</div>
+      </div>
+      <div class="card fragment">
+        <strong>¿Qué significa en la pista?</strong>
+        <p>En el campeonato moderno, la diferencia entre el 1° y 2° del WDC suele ser 10–30 puntos en toda la temporada. Acumular ~1 pto/carrera adicional durante 100–200 GPs es una ventaja competitiva estructural, no marginal.</p>
+      </div>
+      <div class="card fragment" style="margin-top:10px">
+        <strong>Mayor dispersión en grupo Top</strong>
+        <p>Desv. estándar ~1.50 vs ~0.85. El grupo Top concentra tanto a campeones mundiales como a pilotos que debutaron en grandes equipos sin destacar.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Los números ya cuentan una historia bastante clara. 1.62 vs 0.63: una diferencia de casi 1 punto por carrera.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 7 — HISTOGRAMA                           -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">ANDY</span>
+  <div class="stripe"></div>
+  <h2>Distribución del PPC</h2>
+  <div class="grid-2" style="align-items:start;gap:24px">
+    <div class="img-placeholder">
+      <div style="font-size:2em">📊</div>
+      <span>fig_hist.png</span>
+      <span style="font-size:.65em;color:#444">Exportar desde el notebook y reemplazar aquí</span>
+    </div>
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:12px">OBSERVACIONES CLAVE</div>
+      <div class="card fragment">
+        <strong>Asimetría positiva en ambos grupos</strong>
+        <p>La mayoría de pilotos se acumula en PPC bajo. Una cola larga hacia la derecha. Distribución típica de rendimiento deportivo.</p>
+      </div>
+      <div class="card fragment" style="margin-top:10px">
+        <strong>Grupo Chico concentrado cerca de cero</strong>
+        <p>El pico de la distribución azul está en el rango 0–1 pts/carrera.</p>
+      </div>
+      <div class="card fragment" style="margin-top:10px">
+        <strong>Grupo Top corrido hacia la derecha</strong>
+        <p>Mayor masa en rango 1–3 pts/carrera. Cola hasta 6+ pts (Hamilton, Schumacher).</p>
+      </div>
+      <div class="card fragment card-blue" style="margin-top:10px">
+        <strong>¿Por qué importa esto para el test?</strong>
+        <p>Ningún grupo es normal. Por eso se invoca el TCL para justificar el t-test con muestras de n ~60 y ~140.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">El histograma muestra distribuciones asimétricas positivas en ambos grupos. La distribución del grupo Top está claramente corrida hacia la derecha.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 8 — BOXPLOT Y SCATTER                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">JAVIER</span>
+  <div class="stripe"></div>
+  <h2>Boxplot y Scatter</h2>
+  <div class="grid-2" style="gap:16px;margin-bottom:14px">
+    <div class="img-placeholder" style="height:200px">
+      <div style="font-size:1.6em">📦</div>
+      <span>fig_boxplot.png</span>
+    </div>
+    <div class="img-placeholder" style="height:200px">
+      <div style="font-size:1.6em">🔵</div>
+      <span>fig_scatter.png</span>
+    </div>
+  </div>
+  <div class="grid-2" style="gap:16px">
+    <div class="card fragment">
+      <strong>Boxplot — 3 hallazgos</strong>
+      <p>① Mediana Top &gt; Mediana Chico claramente<br>② Mayor IQR en Top (más heterogeneidad)<br>③ Outliers superiores en Top = leyendas del deporte</p>
+    </div>
+    <div class="card card-blue fragment">
+      <strong>Scatter — covariable detectada</strong>
+      <p>Pilotos con más carreras tienden a PPC más altos. Relación positiva. Justifica incluir n_carreras como control en la regresión.</p>
+    </div>
+  </div>
+  <aside class="notes">El boxplot confirma la diferencia visual. La mediana del grupo Top es notablemente más alta. El scatter nos da un indicio importante para la regresión.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 9 — TEST DE HIPÓTESIS                    -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">JAVIER</span>
+  <div class="stripe"></div>
+  <h2>Test de Hipótesis</h2>
+  <div class="grid-2">
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">FORMULACIÓN</div>
+      <div class="card" style="margin-bottom:10px">
+        <strong>H₀:</strong> μ<sub style="color:var(--red)">Top</sub> = μ<sub style="color:var(--blue)">Chico</sub>
+        <p>No hay diferencia en el PPC promedio entre grupos</p>
+      </div>
+      <div class="card card-blue" style="margin-bottom:10px">
+        <strong>H₁:</strong> μ<sub style="color:var(--red)">Top</sub> &gt; μ<sub style="color:var(--blue)">Chico</sub>
+        <p>El grupo Top tiene PPC significativamente mayor</p>
+      </div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin:14px 0 8px">¿POR QUÉ T DE WELCH?</div>
+      <ul style="font-size:.78em">
+        <li class="fragment">Variable dependiente continua (PPC)</li>
+        <li class="fragment">Dos grupos independientes</li>
+        <li class="fragment">Varianzas desiguales (~1.50 vs ~0.85)</li>
+        <li class="fragment">TCL garantiza normalidad con n~60/140</li>
+      </ul>
+    </div>
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">RESULTADO</div>
+      <div class="big-stat fragment" style="margin-bottom:14px">
+        <div class="num green">p &lt;&lt; 0.001</div>
+        <div class="label">α = 0.05</div>
+      </div>
+      <div class="big-stat fragment" style="margin-bottom:14px">
+        <div class="num red">T &gt; 5.0</div>
+        <div class="label">estadístico (positivo, alto)</div>
+      </div>
+      <div class="fragment" style="text-align:center;margin-top:20px">
+        <span class="badge badge-green" style="font-size:1em;padding:10px 24px">✓ RECHAZAMOS H₀</span>
+      </div>
+      <div class="card fragment" style="margin-top:16px;border-left-color:var(--green)">
+        <strong>Interpretación en lenguaje F1</strong>
+        <p>La probabilidad de observar esta diferencia si no existiera en la población real es prácticamente nula. La diferencia de ~1 pto/carrera es estadísticamente robusta.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Nuestras hipótesis son claras. Usamos el t-test de Welch con equal_var=False porque las varianzas son distintas entre grupos. El resultado fue contundente: p << 0.05.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 10 — REGRESIÓN OLS                       -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">JAVIER</span>
+  <div class="stripe"></div>
+  <h2>Modelo de Regresión OLS</h2>
+  <div class="box-formula" style="margin-bottom:16px">
+    PPC<sub>i</sub> = β₀ + β₁ · es_top<sub>i</sub> + β₂ · n_carreras<sub>i</sub> + ε<sub>i</sub>
+  </div>
+  <div class="grid-2">
+    <div>
+      <table class="slide-table">
+        <thead><tr><th>Variable</th><th>Coef.</th><th>p-valor</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>Constante (β₀)</td><td>~0.15</td><td>~0.14</td><td><span class="badge badge-blue">n.s.</span></td></tr>
+          <tr><td><strong>es_top (β₁)</strong></td><td><strong>~1.00</strong></td><td><strong>&lt;0.001</strong></td><td><span class="badge badge-green">✓</span></td></tr>
+          <tr><td>n_carreras (β₂)</td><td>~0.005</td><td>&lt;0.001</td><td><span class="badge badge-green">✓</span></td></tr>
+        </tbody>
+      </table>
+      <div style="margin-top:12px;font-size:.72em;color:var(--mute)">Estimado por Mínimos Cuadrados Ordinarios · statsmodels Python</div>
+    </div>
+    <div>
+      <div class="big-stat fragment" style="margin-bottom:16px">
+        <div class="num red">21.7%</div>
+        <div class="label">R² — varianza explicada</div>
+      </div>
+      <div class="card fragment">
+        <strong>Modelo globalmente significativo</strong>
+        <p>F-statistic con p &lt; 0.001. Ambos predictores aportan información estadísticamente válida.</p>
+      </div>
+      <div class="card card-blue fragment" style="margin-top:10px">
+        <strong>Control por experiencia</strong>
+        <p>Al incluir n_carreras se controla que la diferencia entre grupos no sea simplemente porque los pilotos Top tienen carreras más largas.</p>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Para profundizar en la relación construimos un modelo OLS con dos variables. La variable es_top y el control n_carreras. El modelo tiene R² de 21.7% y ambos coeficientes son significativos.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 11 — INTERPRETACIÓN DE COEFICIENTES      -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">JAVIER</span>
+  <div class="stripe"></div>
+  <h2>Interpretación de Coeficientes</h2>
+  <div style="display:flex;flex-direction:column;gap:14px;margin-top:10px">
+    <div class="card fragment">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:var(--mute);line-height:1">β₀</div>
+        <div>
+          <strong>Constante ≈ 0.15</strong>
+          <p>PPC base de referencia teórico. Es el PPC esperado para un piloto de equipo Chico con cero carreras. No tiene interpretación práctica directa, pero ancla correctamente el modelo.</p>
+        </div>
+      </div>
+    </div>
+    <div class="card fragment" style="border-left-color:var(--red)">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:var(--red);line-height:1">β₁</div>
+        <div>
+          <strong>es_top ≈ +1.00 ⭐ Coeficiente clave</strong>
+          <p>Manteniendo constante la experiencia, debutar en un equipo Top agrega <strong style="color:var(--red)">~1 punto adicional al PPC</strong>. Si dos pilotos tienen exactamente las mismas carreras disputadas pero uno debutó en Top, esperamos que promedíe 1 pto/carrera más. Estadísticamente significativo (p &lt; 0.001).</p>
+        </div>
+      </div>
+    </div>
+    <div class="card fragment" style="border-left-color:var(--blue)">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2em;color:var(--blue);line-height:1">β₂</div>
+        <div>
+          <strong>n_carreras ≈ +0.005</strong>
+          <p>Cada carrera adicional suma ~0.005 pts al PPC. Pequeño por carrera, acumulado: 200 carreras = ~1 pto extra. Los pilotos longevos tienden a ser más consistentes o a estar en mejores equipos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Interpretemos uno por uno. El coeficiente más importante es es_top: controlando por experiencia, debutar en Top agrega 1 punto por carrera. Es el resultado central.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 12 — DISCUSIÓN Y LIMITACIONES            -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">JAVIER</span>
+  <div class="stripe"></div>
+  <h2>Discusión y Limitaciones</h2>
+  <div class="grid-2">
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">¿QUÉ ENCONTRAMOS?</div>
+      <div class="card fragment" style="border-left-color:var(--green);margin-bottom:10px">
+        <strong>Evidencia estadística sólida</strong>
+        <p>T-test y regresión apuntan en la misma dirección. La diferencia de ~1 pto/carrera es robusta y persiste al controlar por experiencia.</p>
+      </div>
+      <div class="card fragment" style="margin-bottom:10px">
+        <strong>R² = 21.7% no es "bajo"</strong>
+        <p>En análisis deportivos con solo 2 variables, explicar el 21.7% de la varianza del rendimiento humano es informativo. El fenómeno es complejo por naturaleza.</p>
+      </div>
+      <div class="card fragment" style="border-left-color:#F39C12">
+        <strong>Correlación ≠ Causalidad</strong>
+        <p>Diseño observacional. No podemos afirmar que el equipo causa el éxito. Los equipos Top contratan a los mejores talentos.</p>
+      </div>
+    </div>
+    <div>
+      <div style="font-family:'Rajdhani',sans-serif;font-size:.7em;color:var(--mute);letter-spacing:3px;margin-bottom:10px">LIMITACIONES</div>
+      <div class="limit-item fragment">
+        <div class="limit-icon">⚠</div>
+        <div class="limit-text"><strong>Sistema de puntos histórico</strong><p>9 pts en 1950 → 25 pts hoy. Comparar PPC entre eras es metodológicamente cuestionable sin estandarización.</p></div>
+      </div>
+      <div class="limit-item fragment">
+        <div class="limit-icon">🎯</div>
+        <div class="limit-text"><strong>Sesgo de selección</strong><p>Ferrari y Mercedes contratan a los pilotos más prometedores. Parte del mayor PPC refleja talento previo, no solo el equipo.</p></div>
+      </div>
+      <div class="limit-item fragment">
+        <div class="limit-icon">📊</div>
+        <div class="limit-text"><strong>Clasificación binaria</strong><p>Top / Chico simplifica la realidad. Existe un espectro: equipos medianos, satélites, equipos con temporadas excepcionales.</p></div>
+      </div>
+    </div>
+  </div>
+  <aside class="notes">Los resultados son claros estadísticamente. Pero la interpretación causal es delicada. La limitación más grande es el sistema de puntuación histórico.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 13 — PRÓXIMOS PASOS                      -->
+<!-- ═══════════════════════════════════════════════ -->
+<section>
+  <span class="speaker">JAVIER</span>
+  <div class="stripe"></div>
+  <h2>Próximos Pasos</h2>
+  <div class="grid-3" style="margin-top:20px">
+    <div class="card fragment" style="border-left-color:var(--red)">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2em;color:var(--red)">01</div>
+      <strong>Estandarizar puntos históricos</strong>
+      <p>Normalizar el sistema de puntos de cada era usando el % del máximo posible por temporada. Hace comparables pilotos de distintas épocas.</p>
+    </div>
+    <div class="card fragment" style="border-left-color:var(--blue)">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2em;color:var(--blue)">02</div>
+      <strong>Trayectoria completa</strong>
+      <p>Clasificar por % de carreras en Top a lo largo de TODA la carrera, no solo el debut. Captura pilotos que migraron de Chico a Top.</p>
+    </div>
+    <div class="card fragment" style="border-left-color:var(--green)">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.2em;color:var(--green)">03</div>
+      <strong>Verificar supuestos OLS</strong>
+      <p>QQ-plot de residuos, test de Breusch-Pagan para homocedasticidad, bootstrap para estimación no paramétrica más robusta.</p>
+    </div>
+  </div>
+  <aside class="notes">Los próximos pasos naturales son tres. Estandarizar los puntos, analizar la trayectoria completa, y verificar los supuestos del modelo.</aside>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- SLIDE 14 — CIERRE                              -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="slide-cierre">
+  <span class="speaker javier">JAVIER</span>
+  <div class="stripe"></div>
+  <h2>Conclusiones</h2>
+  <div style="margin:12px 0 20px">
+    <div class="conclusion-item fragment">
+      <div class="conclusion-num">1</div>
+      <div class="conclusion-text">
+        <strong>Diferencia estadísticamente significativa</strong>
+        <p>El PPC del grupo Top (~1.62) supera al del grupo Chico (~0.63) por ~1 pto/carrera. T-test de Welch: p &lt;&lt; 0.05. Rechazamos H₀.</p>
+      </div>
+    </div>
+    <div class="conclusion-item fragment">
+      <div class="conclusion-num">2</div>
+      <div class="conclusion-text">
+        <strong>El efecto persiste al controlar por experiencia</strong>
+        <p>La regresión OLS confirma que, con igual número de carreras, debutar en Top agrega ~1 pto/carrera al PPC (p &lt; 0.001).</p>
+      </div>
+    </div>
+    <div class="conclusion-item fragment">
+      <div class="conclusion-num">3</div>
+      <div class="conclusion-text">
+        <strong>Correlación estructural, no prueba de causalidad</strong>
+        <p>El análisis describe y cuantifica la diferencia con rigor estadístico. El R² = 21.7% muestra que el fenómeno es complejo y multifactorial.</p>
+      </div>
+    </div>
+  </div>
+  <div class="quote-box fragment">
+    <p>"Si Hamilton hubiera debutado en un Minardi, ¿dónde estaría hoy? La respuesta estadística sería: con un PPC bastante más bajo. Pero eso es especulación, y nosotros somos gente de datos."</p>
+    <cite>— Andy Villarroel y Javier Alcaino</cite>
+  </div>
+  <div class="fragment" style="text-align:center;margin-top:16px">
+    <span class="badge badge-red" style="font-size:.9em;padding:8px 20px">MUCHAS GRACIAS · PREGUNTAS BIENVENIDAS</span>
+  </div>
+  <aside class="notes">Para cerrar: encontramos evidencia estadística sólida de que los pilotos que debutan en equipos Top acumulan significativamente más puntos por carrera. Si Hamilton hubiera debutado en un Minardi... pero eso es especulación, y nosotros somos gente de datos. Gracias.</aside>
+</section>
+
+</div><!-- /slides -->
+</div><!-- /reveal -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.6.0/reveal.min.js"></script>
+<script>
+Reveal.initialize({
+  hash: true,
+  slideNumber: 'c/t',
+  progress: true,
+  controls: true,
+  transition: 'fade',
+  transitionSpeed: 'fast',
+  backgroundTransition: 'fade',
+  autoAnimateMatcher: null,
+  keyboard: {
+    39: 'next',   // flecha derecha
+    37: 'prev',   // flecha izquierda
+    32: 'next',   // espacio
+  },
+  plugins: []
+});
+</script>
+</body>
+</html>
